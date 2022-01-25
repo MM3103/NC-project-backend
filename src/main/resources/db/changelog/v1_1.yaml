@@ -1,16 +1,15 @@
 databaseChangeLog:
-  - logicalFilePath: db/changelog/db.changelog-master.yaml
+  - logicalFilePath: db/changelog/v1_1.yaml
   - changeSet:
       id: 1
       author: admin
       changes:
         - createTable:
-            tableName: applications
+            tableName: orders
             columns:
               - column:
                   name: id
-                  type: integer
-                  autoIncrement: true
+                  type: uuid
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -28,12 +27,12 @@ databaseChangeLog:
                   name: email
                   type: varchar(50)
               - column:
-                  name: type_application
+                  name: type_order
                   type: varchar(50)
               - column:
                   name: address
                   type: varchar(200)
               - column:
-                  name: application_status
+                  name: order_status
                   type: boolean
 

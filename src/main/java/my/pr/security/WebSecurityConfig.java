@@ -1,7 +1,5 @@
 package my.pr.security;
 
-
-
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -42,8 +40,12 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/anonymous/**").permitAll()
+                .antMatchers("/all").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/adm").hasRole("ADMIN")
+                .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
+/*                .antMatchers("/api/anonymous/**").permitAll()*/
                 .anyRequest().fullyAuthenticated();
     }
 }

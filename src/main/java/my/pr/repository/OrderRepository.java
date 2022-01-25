@@ -1,9 +1,11 @@
 package my.pr.repository;
 
-import my.pr.model.Application;
+import my.pr.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface ApplicationRepository extends JpaRepository<Application,Integer> {
+public interface OrderRepository extends JpaRepository<Order, UUID> {
 }
