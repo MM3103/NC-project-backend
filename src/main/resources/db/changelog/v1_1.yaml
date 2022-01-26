@@ -28,7 +28,7 @@ databaseChangeLog:
                   type: varchar(50)
               - column:
                   name: type_order
-                  type: varchar(50)
+                  type: varchar(51)
               - column:
                   name: address
                   type: varchar(200)

@@ -21,4 +21,4 @@ keycloak:
   auth-server-url: http://localhost:8080/auth
   realm: my_realm
   resource: my_client
-  public-client: true
+  public-client:  true
