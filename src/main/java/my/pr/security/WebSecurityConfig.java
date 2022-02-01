@@ -44,7 +44,6 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .antMatchers("/all").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/adm").hasRole("ADMIN")
                 .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
-/*                .antMatchers("/api/anonymous/**").permitAll()*/
                 .anyRequest().fullyAuthenticated();
     }
 }

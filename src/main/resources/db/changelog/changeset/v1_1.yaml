@@ -34,5 +34,5 @@ databaseChangeLog:
                   type: varchar(200)
               - column:
                   name: order_status
-                  type: boolean
+                  type: varchar(50)
 

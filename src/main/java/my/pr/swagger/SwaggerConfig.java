@@ -1,4 +1,5 @@
 package my.pr.swagger;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -25,7 +26,7 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi customApi() {
-        return GroupedOpenApi.builder().group("api").pathsToMatch("/api/**").build();
+        return GroupedOpenApi.builder().group(" ").pathsToMatch("/**").build();
     }
 
     public static final String BEARER_KEY_SECURITY_SCHEME = "bearer-key";

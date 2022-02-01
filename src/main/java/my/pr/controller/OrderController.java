@@ -1,21 +1,31 @@
 package my.pr.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import my.pr.model.Order;
 import my.pr.service.OrderService;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
 @RestController
-@RequestMapping("/api")
 @SecurityRequirement(name = "bearer-key")
+@ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated schema"),
+        @ApiResponse(responseCode = "404", description = "Schema not found"),
+        @ApiResponse(responseCode = "401", description = "Access error"),
+        @ApiResponse(responseCode = "403", description = "Access error"),
+        @ApiResponse(responseCode = "400", description = "Missing or invalid request body"),
+        @ApiResponse(responseCode = "500", description = "Internal error")})
 public class OrderController {
 
     @Autowired
@@ -23,20 +33,26 @@ public class OrderController {
 
     @GetMapping("/adm")
     @Operation(summary = "Get all orders")
-    public List<Order> getAllBooks() {
+    public List<Order> getAllOrders() {
         return service.getAll();
     }
 
     @GetMapping("/adm/{id}")
     @Operation(summary = "Get order by id")
-    public ResponseEntity<Order> getBook(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
+    public ResponseEntity<Order> getOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
         return ResponseEntity.ok().body(service.get(id));
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Get all orders by email")
+    public List<Order> getOrdersByEmail(KeycloakAuthenticationToken authentication) {
+        return service.getByEmail(authentication);
     }
 
     @PostMapping("/all")
     @Operation(summary = "Add new order")
-    public Order addApplication(@RequestBody Order newOrder) {
-        return service.add(newOrder);
+    public Order addOrder(@RequestBody Order newOrder, KeycloakAuthenticationToken authentication) {
+        return service.add(newOrder, authentication);
     }
 
     @DeleteMapping("/all/{id}")
@@ -50,35 +66,7 @@ public class OrderController {
 
     @PatchMapping("/all/{id}")
     @Operation(summary = "Update order  by id")
-    public Order updateBook(@PathVariable UUID id, @RequestBody Order newOrder) throws OpenApiResourceNotFoundException {
+    public Order updateOrder(@PathVariable UUID id, @RequestBody Order newOrder) throws OpenApiResourceNotFoundException {
         return service.update(id, newOrder);
     }
-
-
-
-
-/*    @GetMapping("/anonymous")
-    public String getAnonymousInfo() {
-        return "Anonymous";
-    }
-
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('USER')")
-    public String getUserInfo() {
-        return "user info";
-    }
-
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String getAdminInfo() {
-        return "admin info";
-    }
-
-    @GetMapping("/me")
-    public Object getMe() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
-    }*/
-
-
 }
