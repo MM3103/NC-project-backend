@@ -1,6 +1,5 @@
 package my.pr.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -13,13 +12,11 @@ import java.util.UUID;
 public class Order {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(generator = "UUID", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", unique = true
             , updatable = false, nullable = false)
     private UUID id;
-
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -30,13 +27,12 @@ public class Order {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "type_order", nullable = false)
+    @Column(name = "type_order")
     private String typeOrder;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
 
-    @Column(name = "order_status", nullable = false)
+    @Column(name = "order_status")
     private String orderStatus;
-
 }

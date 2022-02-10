@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,42 +32,43 @@ public class OrderController {
     @Autowired
     OrderService service;
 
-    @GetMapping("/adm")
+    @GetMapping("/order/getallorders")
     @Operation(summary = "Get all orders")
     public List<Order> getAllOrders() {
         return service.getAll();
     }
 
-    @GetMapping("/adm/{id}")
+    @GetMapping("/order/getorderbyid/{id}")
     @Operation(summary = "Get order by id")
     public ResponseEntity<Order> getOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
         return ResponseEntity.ok().body(service.get(id));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/order/getallordersbyemail")
     @Operation(summary = "Get all orders by email")
     public List<Order> getOrdersByEmail(KeycloakAuthenticationToken authentication) {
         return service.getByEmail(authentication);
     }
 
-    @PostMapping("/all")
+    @PostMapping("/order/addneworder")
     @Operation(summary = "Add new order")
-    public Order addOrder(@RequestBody Order newOrder, KeycloakAuthenticationToken authentication) {
-        return service.add(newOrder, authentication);
+    public Order addOrder(@RequestBody Order newOrder, KeycloakAuthenticationToken authentication) throws MessagingException {
+        return service.add(newOrder,authentication);
     }
 
-    @DeleteMapping("/all/{id}")
+    @DeleteMapping("/order/deleteorderbyid/{id}")
     @Operation(summary = "Delete order by id")
-    public Map<String, Boolean> deleteBook(@PathVariable UUID id) throws OpenApiResourceNotFoundException {
+    public Map<String, Boolean> deleteBook(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
         service.delete(id);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", true);
         return response;
     }
 
-    @PatchMapping("/all/{id}")
+    @PatchMapping("/order/updateorderbyid/{id}")
     @Operation(summary = "Update order  by id")
-    public Order updateOrder(@PathVariable UUID id, @RequestBody Order newOrder) throws OpenApiResourceNotFoundException {
+    public Order updateOrder(@PathVariable(value = "id") UUID id, @RequestBody Order newOrder) throws OpenApiResourceNotFoundException {
         return service.update(id, newOrder);
     }
+
 }
