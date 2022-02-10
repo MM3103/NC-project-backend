@@ -32,31 +32,31 @@ public class OrderController {
     @Autowired
     OrderService service;
 
-    @GetMapping("/order/getallorders")
+    @GetMapping("/order/getAll")
     @Operation(summary = "Get all orders")
     public List<Order> getAllOrders() {
         return service.getAll();
     }
 
-    @GetMapping("/order/getorderbyid/{id}")
+    @GetMapping("/order/{id}")
     @Operation(summary = "Get order by id")
     public ResponseEntity<Order> getOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
         return ResponseEntity.ok().body(service.get(id));
     }
 
-    @GetMapping("/order/getallordersbyemail")
+    @GetMapping("/order")
     @Operation(summary = "Get all orders by email")
     public List<Order> getOrdersByEmail(KeycloakAuthenticationToken authentication) {
         return service.getByEmail(authentication);
     }
 
-    @PostMapping("/order/addneworder")
+    @PostMapping("/order")
     @Operation(summary = "Add new order")
     public Order addOrder(@RequestBody Order newOrder, KeycloakAuthenticationToken authentication) throws MessagingException {
         return service.add(newOrder,authentication);
     }
 
-    @DeleteMapping("/order/deleteorderbyid/{id}")
+    @DeleteMapping("/order/{id}")
     @Operation(summary = "Delete order by id")
     public Map<String, Boolean> deleteBook(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
         service.delete(id);
@@ -65,7 +65,7 @@ public class OrderController {
         return response;
     }
 
-    @PatchMapping("/order/updateorderbyid/{id}")
+    @PatchMapping("/order/{id}")
     @Operation(summary = "Update order  by id")
     public Order updateOrder(@PathVariable(value = "id") UUID id, @RequestBody Order newOrder) throws OpenApiResourceNotFoundException {
         return service.update(id, newOrder);
