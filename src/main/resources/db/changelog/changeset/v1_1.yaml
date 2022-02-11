@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/v1_1.yaml
+  - changeSet:
+      id: 1
+      author: admin
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+              - column:
+                  name: type_order
+                  type: varchar(51)
+              - column:
+                  name: address
+                  type: varchar(200)
+              - column:
+                  name: order_status
+                  type: varchar(50)
+
