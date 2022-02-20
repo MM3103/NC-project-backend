@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/db2}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/db5}
     username:  ${DB_USERNAME:postgres}
     password:  ${DB_PASSWORD:1234}
   jpa:
@@ -22,3 +22,4 @@ keycloak:
   realm: ${KEYCLOAK_REALM:my_realm}
   resource: ${KEYCLOAK_RESOURCE:my_client}
   public-client: true
+
