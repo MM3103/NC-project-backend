@@ -34,5 +34,5 @@ public class Order {
     private String address;
 
     @Column(name = "order_status")
-    private String orderStatus;
+    private Status orderStatus;
 }
