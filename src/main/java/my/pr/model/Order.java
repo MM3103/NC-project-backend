@@ -1,6 +1,7 @@
 package my.pr.model;
 
 import lombok.Data;
+import my.pr.status.Status;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,6 +11,14 @@ import java.util.UUID;
 @Table(name = "orders")
 @Data
 public class Order {
+
+    public Order() {
+    }
+
+    public Order(String typeOrder, String address) {
+        this.typeOrder = typeOrder;
+        this.address = address;
+    }
 
     @Id
     @GeneratedValue(generator = "UUID", strategy = GenerationType.IDENTITY)

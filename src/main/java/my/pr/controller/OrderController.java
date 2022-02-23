@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -35,7 +33,7 @@ public class OrderController {
 
     @GetMapping("/order/getAll")
     @Operation(summary = "Get all orders")
-    public List<Order> getAllOrders(HttpServletRequest request) {
+    public List<Order> getAllOrders() {
         return service.getAll();
     }
 
@@ -47,18 +45,16 @@ public class OrderController {
 
     @GetMapping("/order/acceptedorder/{id}")
     @Operation(summary = "Accepted order")
-    public String acceptedOrder(@PathVariable(value = "id") UUID id,HttpServletResponse response) throws OpenApiResourceNotFoundException, IOException {
+    public String acceptedOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException, IOException {
         service.acceptedOrder(id);
-        response.sendRedirect("http://localhost:3000/accept");
-        return   "Order accepted";
+        return "Order accepted";
     }
 
     @GetMapping("/order/unacceptedorder/{id}")
     @Operation(summary = "Unaccepted order")
-    public String unacceptedOrder(@PathVariable(value = "id") UUID id, HttpServletResponse response) throws OpenApiResourceNotFoundException, IOException {
+    public String unacceptedOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException, IOException {
         service.unacceptedOrder(id);
-        response.sendRedirect("http://localhost:3000/reject");
-        return   "Order unaccepted";
+        return "Order unaccepted";
     }
 
     @GetMapping("/order/getUserOrders")
