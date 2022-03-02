@@ -1,6 +1,7 @@
 package my.pr.service;
 
 import my.pr.model.Order;
+import my.pr.model.Status;
 import my.pr.repository.OrderRepository;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -40,6 +41,7 @@ public class OrderService {
         newOrder.setEmail(token.getEmail());
         newOrder.setFirstName(token.getGivenName());
         newOrder.setLastName(token.getFamilyName());
+        newOrder.setOrderStatus(Status.WAITING);
         return repository.save(newOrder);
     }
 
