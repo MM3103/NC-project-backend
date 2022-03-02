@@ -1,5 +1,4 @@
 package my.pr.email;
-
 import javax.mail.Message;
 import javax.mail.Multipart;
 import javax.mail.Transport;

@@ -6,16 +6,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import my.pr.model.Order;
 import my.pr.service.OrderService;
-import org.springdoc.api.OpenApiResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.io.IOException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
-
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -39,20 +37,20 @@ public class OrderController {
 
     @GetMapping("/order/{id}")
     @Operation(summary = "Get order by id")
-    public ResponseEntity<Order> getOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
+    public ResponseEntity<Order> getOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
         return ResponseEntity.ok().body(service.get(id));
     }
 
     @GetMapping("/order/acceptedorder/{id}")
     @Operation(summary = "Accepted order")
-    public String acceptedOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException, IOException {
+    public String acceptedOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
         service.acceptedOrder(id);
         return "Order accepted";
     }
 
     @GetMapping("/order/unacceptedorder/{id}")
     @Operation(summary = "Unaccepted order")
-    public String unacceptedOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException, IOException {
+    public String unacceptedOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
         service.unacceptedOrder(id);
         return "Order unaccepted";
     }
@@ -71,13 +69,13 @@ public class OrderController {
 
     @DeleteMapping("/order/{id}")
     @Operation(summary = "Delete order by id")
-    public String deleteOrder(@PathVariable(value = "id") UUID id) throws OpenApiResourceNotFoundException {
+    public String deleteOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
         return service.delete(id);
     }
 
     @PatchMapping("/order/{id}")
     @Operation(summary = "Update order  by id")
-    public String updateOrder(@PathVariable(value = "id") UUID id, @RequestBody Order newOrder) throws OpenApiResourceNotFoundException {
+    public String updateOrder(@PathVariable(value = "id") UUID id, @RequestBody Order newOrder) throws EntityNotFoundException {
         return service.update(id, newOrder);
     }
 

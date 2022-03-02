@@ -1,7 +1,7 @@
 package my.pr.service;
 
-import my.pr.email.Sender;
 import my.pr.email.Email;
+import my.pr.email.Sender;
 import my.pr.model.Order;
 import my.pr.status.Status;
 import my.pr.repository.OrderRepository;
@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.keycloak.representations.AccessToken;
-
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -54,8 +53,8 @@ public class OrderService {
 
     public String delete(UUID id) throws EntityNotFoundException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
-        Status str1 = order.getOrderStatus();
-        if (str1.equals(Status.WAITING)) {
+        Status orderStatus = order.getOrderStatus();
+        if (orderStatus.equals(Status.WAITING)) {
             repository.delete(order);
             return "Order successfully deleted";
         } else {
@@ -65,11 +64,11 @@ public class OrderService {
 
     public String update(UUID id, Order newOrder) throws EntityNotFoundException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
-        Status str1 = order.getOrderStatus();
-        if (!(str1.equals(Status.WAITING))) {
+        Status orderStatus = order.getOrderStatus();
+        if (!(orderStatus.equals(Status.WAITING))) {
             return "Order cannot be updated";
         } else {
-            checkOrder(newOrder, order);
+            setAdditionalData(newOrder, order);
             repository.save(order);
             return "Order  successfully updated";
         }
@@ -89,9 +88,9 @@ public class OrderService {
         return repository.save(order);
     }
 
-    private void checkOrder(Order newOrder, Order lastOrder) {
-            lastOrder.setTypeOrder(newOrder.getTypeOrder());
-            lastOrder.setAddress(newOrder.getAddress());
+    private void setAdditionalData(Order newOrder, Order lastOrder) {
+        lastOrder.setTypeOrder(newOrder.getTypeOrder());
+        lastOrder.setAddress(newOrder.getAddress());
     }
 
     private void emailMessage(Order savedOrder, AccessToken token) throws MessagingException {
@@ -105,5 +104,4 @@ public class OrderService {
                 + uuid));
         sender.sendMessage(email);
     }
-
 }

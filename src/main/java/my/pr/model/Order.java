@@ -1,23 +1,21 @@
 package my.pr.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 import my.pr.status.Status;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
-@Table(name = "orders")
 @Data
+@Table(name = "orders")
 public class Order {
 
     public Order() {
-    }
-
-    public Order(String typeOrder, String address) {
-        this.typeOrder = typeOrder;
-        this.address = address;
     }
 
     @Id
@@ -36,12 +34,27 @@ public class Order {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "type_order")
+    @NotNull
+    @Column(name = "type_order", nullable = false)
     private String typeOrder;
 
-    @Column(name = "address")
+    @NotNull
+    @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "order_status")
     private Status orderStatus;
+
+    @Builder
+    @JsonCreator
+    public static Order customBuilder(@JsonProperty("typeOrder") String typeOrder,@JsonProperty("address") String address) {
+        Order order = new Order();
+        order.setTypeOrder(typeOrder);
+        order.setAddress(address);
+        if (typeOrder.trim().length() == 0 || address.trim().length() == 0) {
+            throw new IllegalStateException("Cannot send 'text' and 'file'.");
+        }
+        return order;
+    }
+
 }

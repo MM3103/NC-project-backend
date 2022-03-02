@@ -1,5 +1,4 @@
 databaseChangeLog:
-  - logicalFilePath: db/changelog/v1_1.yaml
   - changeSet:
       id: 1
       author: admin

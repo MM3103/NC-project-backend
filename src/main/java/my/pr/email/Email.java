@@ -1,5 +1,4 @@
 package my.pr.email;
-
 import lombok.Getter;
 import lombok.Setter;
 
