@@ -1,15 +1,24 @@
 package my.pr.model;
 
 import lombok.Data;
+import my.pr.status.Status;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
 @Data
 public class Order {
+
+    public Order() {
+    }
+
+    public Order(String typeOrder, String address) {
+        this.typeOrder = typeOrder;
+        this.address = address;
+    }
 
     @Id
     @GeneratedValue(generator = "UUID", strategy = GenerationType.IDENTITY)
@@ -27,10 +36,12 @@ public class Order {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "type_order")
+    @NotNull
+    @Column(name = "type_order", nullable = false)
     private String typeOrder;
 
-    @Column(name = "address")
+    @NotNull
+    @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "order_status")

@@ -1,4 +1,4 @@
-package my.pr.model;
+package my.pr.status;
 
 public enum Status {
     WAITING,

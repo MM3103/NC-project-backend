@@ -1,5 +1,5 @@
 databaseChangeLog:
-  - logicalFilePath: db/changelog/v1_1.yaml
+  - logicalFilePath: db/changelog/V1_1.yaml
   - changeSet:
       id: 1
       author: admin
@@ -26,19 +26,12 @@ databaseChangeLog:
               - column:
                   name: email
                   type: varchar(50)
-                  constraints:
-                    nullable: false
               - column:
                   name: type_order
                   type: varchar(51)
-                  constraints:
-                    nullable: false
               - column:
                   name: address
-                  type: varchar(50)
-                  constraints:
-                    nullable: false
+                  type: varchar(200)
               - column:
                   name: order_status
                   type: varchar(50)
-

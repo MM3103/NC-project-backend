@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: h2/changelog/changeset/V1_1.yaml
