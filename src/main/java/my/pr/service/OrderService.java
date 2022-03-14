@@ -4,7 +4,6 @@ import my.pr.email.Email;
 import my.pr.email.Sender;
 import my.pr.model.Order;
 import my.pr.status.Status;
-import my.pr.model.Status;
 import my.pr.repository.OrderRepository;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class OrderService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
     }
 
-    public Order add(Order newOrder) throws MessagingException {
+    public Order createOrder(Order newOrder) throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SimpleKeycloakAccount account = (SimpleKeycloakAccount) authentication.getDetails();
         AccessToken token = account.getKeycloakSecurityContext().getToken();
@@ -47,9 +46,9 @@ public class OrderService {
         newOrder.setFirstName(token.getGivenName());
         newOrder.setLastName(token.getFamilyName());
         newOrder.setOrderStatus(Status.WAITING);
-        Order savedOrder = repository.save(newOrder);
-        emailMessage(savedOrder, token);
-        return savedOrder;
+        repository.save(newOrder);
+        emailMessage(newOrder, token);
+        return newOrder;
     }
 
     public String delete(UUID id) throws EntityNotFoundException {
@@ -75,18 +74,26 @@ public class OrderService {
         }
     }
 
-    public Order acceptedOrder(UUID id) throws EntityNotFoundException {
+    public Order acceptOrder(UUID id) throws EntityNotFoundException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
-        Status status = Status.ACCEPTED;
-        order.setOrderStatus(status);
-        return repository.save(order);
+        if (order.getOrderStatus().equals(Status.WAITING)) {
+            order.setOrderStatus(Status.ACCEPTED);
+            return repository.save(order);
+        }
+        else {
+            return order;
+        }
     }
 
-    public Order unacceptedOrder(UUID id) throws EntityNotFoundException {
+    public Order rejectOrder(UUID id) throws EntityNotFoundException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
-        Status status = Status.REJECTED;
-        order.setOrderStatus(status);
-        return repository.save(order);
+        if(order.getOrderStatus().equals(Status.WAITING)) {
+            order.setOrderStatus(Status.REJECTED);
+            return repository.save(order);
+        }
+        else {
+            return order;
+        }
     }
 
     private void setAdditionalData(Order newOrder, Order lastOrder) {
