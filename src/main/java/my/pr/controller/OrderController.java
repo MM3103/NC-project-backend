@@ -19,6 +19,7 @@ import java.util.UUID;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 @SecurityRequirement(name = "bearer-key")
 @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated schema"),
         @ApiResponse(responseCode = "404", description = "Schema not found"),

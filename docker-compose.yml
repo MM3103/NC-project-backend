@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  my-db:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=db5
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - my-net
+  keycloak-dev:
+    image: jboss/keycloak:16.1.0
+    ports:
+      - 8080:8080
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_FRONTEND_URL: "http://localhost:8080/auth"
+    command:
+      - "-b 0.0.0.0"
+      - "-Dkeycloak.import=/tmp/keycloak/realm.json"
+    volumes:
+      - ./keycloak:/tmp/keycloak
+    networks:
+      - my-net
+  my-service:
+    image: mm98/order-service-app:1.0
+    ports:
+      - 8484:8484
+    environment:
+      - DB_URL=jdbc:postgresql://my-db:5432/db5
+      - KEYCLOAK_URL=http://keycloak-dev:8080/auth
+      - KEYCLOAK_REALM=my_realm
+      - KEYCLOAK_RESOURCE=my_client
+      - DB_PASSWORD=1234
+      - DB_USERNAME=postgres
+    depends_on:
+      - keycloak-dev
+      - my-db
+    networks:
+      - my-net
+volumes:
+  postgresql_data:
+    driver: local
+networks:
+  my-net:
+    driver: bridge
