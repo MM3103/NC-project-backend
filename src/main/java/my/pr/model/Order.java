@@ -44,7 +44,6 @@ public class Order {
 
     @Column(name = "order_status")
     private Status orderStatus;
-
     @Builder
     @JsonCreator
     public static Order customBuilder(@JsonProperty("typeOrder") String typeOrder,@JsonProperty("address") String address) {
@@ -56,5 +55,4 @@ public class Order {
         }
         return order;
     }
-
 }
