@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: admin
+      changes:
+        - addNotNullConstraint:
+            tableName: orders
+            columnName: type_order
+            defaultNullValue: false
+        - addNotNullConstraint:
+            tableName: orders
+            columnName: address
+            defaultNullValue: false
+        - addNotNullConstraint:
+            tableName: orders
+            columnName: email
+            defaultNullValue: false
