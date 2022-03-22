@@ -41,18 +41,18 @@ public class OrderController {
         return ResponseEntity.ok().body(service.get(id));
     }
 
-    @GetMapping("/order/acceptedorder/{id}")
+    @GetMapping("/order/acceptOrder/{id}")
     @Operation(summary = "Accepted order")
-    public String acceptedOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
-        service.acceptedOrder(id);
+    public String acceptOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
+        service.acceptOrder(id);
         return "Order accepted";
     }
 
-    @GetMapping("/order/unacceptedorder/{id}")
-    @Operation(summary = "Unaccepted order")
-    public String unacceptedOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
-        service.unacceptedOrder(id);
-        return "Order unaccepted";
+    @GetMapping("/order/rejectOrder/{id}")
+    @Operation(summary = "Rejected order")
+    public String rejectOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
+        service.rejectOrder(id);
+        return "Order rejected";
     }
 
     @GetMapping("/order/getUserOrders")
@@ -63,8 +63,8 @@ public class OrderController {
 
     @PostMapping("/order")
     @Operation(summary = "Add new order")
-    public Order addOrder(@RequestBody Order newOrder) throws MessagingException {
-        return service.add(newOrder);
+    public Order createOrder(@RequestBody Order newOrder) throws MessagingException {
+        return service.createOrder(newOrder);
     }
 
     @DeleteMapping("/order/{id}")
