@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: admin
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: city_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: cities_orders_fk
+                    referencedTableName: cities
+                    referencedColumnNames: id
+              - column:
+                  name: street_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: streets_orders_fk
+                    referencedTableName: streets
+                    referencedColumnNames: id
+              - column:
+                  name: house
+                  type: integer
+              - column:
+                  name: flat
+                  type: integer
+              - column:
+                  name: self_installation
+                  type: boolean
+
+
