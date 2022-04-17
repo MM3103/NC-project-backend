@@ -40,5 +40,3 @@ databaseChangeLog:
                     foreignKeyName: cities_streets_fk
                     referencedTableName: cities
                     referencedColumnNames: id
-
-

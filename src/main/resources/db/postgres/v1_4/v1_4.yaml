@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: admin
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: creation_time
+                  type: timestamptz
+              - column:
+                  name: modification_time
+                  type: timestamptz

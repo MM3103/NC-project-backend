@@ -1,4 +1,5 @@
 package my.pr.security;
+
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -41,9 +42,33 @@ public class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
-                .antMatchers("/order", "/order/getUserOrders","/city/getAllCity","/city/getCity/*","/street/getAllStreet","/street/getStreet/*").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/order/acceptOrder/**", "/order/rejectOrder/**", "/order/getAll","/city/getCityId/*","/city/delete/*","/city/update/*","/city/add","/street/delete/*","/street/update/*","/street/add").hasRole("ADMIN")
-                .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
+                .antMatchers("/order",
+                        "/order/getUserOrders",
+                        "/city/getAllCity",
+                        "/city/getCity/*",
+                        "/street/getAllStreet",
+                        "/street/getStreet/*",
+                        "city/getAllActiveCity",
+                        "street/getAllActiveStreet")
+                .hasAnyRole("ADMIN", "USER")
+                .antMatchers("/order/acceptOrder/**",
+                        "/order/rejectOrder/**",
+                        "/order/getAll",
+                        "/city/delete/*",
+                        "/city/update/*",
+                        "/city/add",
+                        "/street/delete/*",
+                        "/street/update/*",
+                        "/street/add",
+                        "city/getAllInactiveCity",
+                        "street/getAllInactiveStreet",
+                        "city/updateStatus/*",
+                        "street/updateStatus/*")
+                .hasRole("ADMIN")
+                .antMatchers("/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**").permitAll()
                 .anyRequest().fullyAuthenticated();
     }
 }

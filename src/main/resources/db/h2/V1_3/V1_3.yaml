@@ -29,4 +29,3 @@ databaseChangeLog:
               - column:
                   name: self_installation
                   type: boolean
-

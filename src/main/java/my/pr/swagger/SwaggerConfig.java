@@ -1,4 +1,5 @@
 package my.pr.swagger;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -19,7 +20,9 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .components(
                         new Components().addSecuritySchemes(BEARER_KEY_SECURITY_SCHEME,
-                                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer").bearerFormat("JWT")))
                 .info(new Info().title(applicationName));
     }
 

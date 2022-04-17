@@ -1,20 +1,21 @@
 databaseChangeLog:
   - include:
-      file: v1_0/v1_0.yaml
+      file: V1_0/V1_0.yaml
       relativeToChangelogFile: true
   - include:
-      file: v1_1/v1_1.yaml
+      file: V1_1/V1_1.yaml
       relativeToChangelogFile: true
   - include:
-      file: v1_2/v1_2.yaml
+      file: V1_2/V1_2.yaml
       relativeToChangelogFile: true
   - include:
-      file: v1_3/v1_3.yaml
+      file: V1_3/V1_3.yaml
       relativeToChangelogFile: true
   - include:
-      file: v1_4/v1_4.yaml
+      file: V1_4/V1_4.yaml
       relativeToChangelogFile: true
   - include:
-      file: v1_5/v1_5.yaml
+      file: V1_5/V1_5.yaml
       relativeToChangelogFile: true
+
 

@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import my.pr.status.Status;
+import my.pr.status.TypeOrder;
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
@@ -37,7 +39,8 @@ public class Order {
 
     @NotNull
     @Column(name = "type_order", nullable = false)
-    private String typeOrder;
+    @Enumerated(EnumType.STRING)
+    private TypeOrder typeOrder;
 
     @ManyToOne
     private City city;
@@ -52,24 +55,30 @@ public class Order {
     @Column(name = "flat", nullable = false)
     private Integer flat;
 
-    @Column(name = "installation", nullable = false)
-    private Boolean installation;
+    @Column(name = "self_installation", nullable = false)
+    private Boolean selfInstallation;
 
     @NotNull
     @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "order_status")
+    @Enumerated(EnumType.STRING)
     private Status orderStatus;
 
+    @Column(name = "creation_time")
+    private OffsetDateTime creation_time;
+
+    @Column(name = "modification_time")
+    private OffsetDateTime modification_time;
 
     @Builder
     @JsonCreator
-    public static Order customBuilder(@JsonProperty("typeOrder") String typeOrder) {
+    public static Order customBuilder(@JsonProperty("typeOrder") TypeOrder typeOrder) {
         Order order = new Order();
         order.setTypeOrder(typeOrder);
-        if (typeOrder.trim().length() == 0 ) {
-            throw new IllegalStateException("Cannot send 'text' and 'file'.");
+        if (typeOrder.toString().trim().length() == 0) {
+            throw new IllegalStateException("Type order is null'.");
         }
         return order;
     }

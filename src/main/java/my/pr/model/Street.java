@@ -1,6 +1,7 @@
 package my.pr.model;
 
 import lombok.Data;
+import my.pr.status.CityAndStreetStatus;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -30,10 +31,12 @@ public class Street {
     @Column(name = "name", nullable = false)
     private String name;
 
-
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private City city;
 
+    @Column(name = "street_status")
+    @Enumerated(EnumType.STRING)
+    private CityAndStreetStatus streetStatus = CityAndStreetStatus.ACTIVE;
 
 }

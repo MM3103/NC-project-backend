@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import my.pr.model.City;
 import my.pr.service.CityService;
+import my.pr.status.CityAndStreetStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/city")
 @CrossOrigin(origins = "*")
 @SecurityRequirement(name = "bearer-key")
 @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully updated schema"),
@@ -27,46 +29,55 @@ public class CityController {
     @Autowired
     CityService service;
 
-    @GetMapping("/city/getAllCity")
+    @GetMapping("/getAllCities")
     @Operation(summary = "Get all cities")
     public List<City> getAllCities() {
         return service.getAllCities();
     }
 
-    @GetMapping("/city/getAllCitiesNames")
-    @Operation(summary = "Get all cities")
-    public List<String> getAllCitiesNames() {
-        return service.getCitiesNames();
+    @GetMapping("/getAllActiveCities")
+    @Operation(summary = "Get all active cities")
+    public List<City> getAllActiveCities() {
+        return service.getActiveCities();
     }
 
-    @GetMapping("/city/getCity/{id}")
+    @GetMapping("/getAllInactiveCities")
+    @Operation(summary = "Get all inactive cities")
+    public List<City> getAllInactiveCities() {
+        return service.getInactiveCities();
+    }
+
+    @GetMapping("/getCityById/{id}")
     @Operation(summary = "Get city by id")
-    public ResponseEntity<City> getCity(@PathVariable(value = "id") Long id) throws EntityNotFoundException {
-        return ResponseEntity.ok().body(service.getCity(id));
+    public ResponseEntity<City> getCityById(@PathVariable(value = "id") Long id) throws EntityNotFoundException {
+        return ResponseEntity.ok().body(service.getCityById(id));
     }
 
-    @GetMapping("/city/getCityId/{name}")
-    @Operation(summary = "Get city by name")
-    public Long getCityId(@PathVariable(value = "name") String name) throws EntityNotFoundException {
-        return service.getIdByName(name);
-    }
-
-    @PostMapping("/city/add")
+    @PostMapping("/add")
     @Operation(summary = "Add new city")
     public City addCity(@RequestBody City newCity) {
         return service.addCity(newCity);
     }
 
-    @DeleteMapping("/city/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete city by id")
     public void deleteCity(@PathVariable(value = "id") Long id) throws EntityNotFoundException {
         service.deleteCity(id);
     }
 
-    @PatchMapping("/city/update/{id}")
+    @PatchMapping("/update/{id}")
     @Operation(summary = "Update city  by id")
-    public void updateCity(@PathVariable(value = "id") Long id, @RequestBody City newCity) throws EntityNotFoundException {
-         service.updateCity(id, newCity);
+    public void updateCity(
+            @PathVariable(value = "id") Long id,
+            @RequestBody City newCity) throws EntityNotFoundException {
+        service.updateCity(id, newCity);
     }
+
+    @PatchMapping("/updateStatus/{id}")
+    @Operation(summary = "Update city status by id")
+    public void updateCityStatus(@PathVariable(value = "id") Long id,@RequestBody CityAndStreetStatus status) throws EntityNotFoundException {
+        service.setCityStatus(id,status);
+    }
+
 
 }
