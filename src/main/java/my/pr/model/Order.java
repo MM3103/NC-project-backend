@@ -62,6 +62,11 @@ public class Order {
     @Column(name = "order_status")
     private Status orderStatus;
 
+    @Column(name = "create_time")
+    private OffsetDateTime create;
+
+    @Column(name = "handling_time")
+    private OffsetDateTime handling;
 
     @Builder
     @JsonCreator

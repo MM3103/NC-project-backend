@@ -5,4 +5,5 @@ public enum Status {
     WAITING,
     ACCEPTED,
     REJECTED,
+    ARCHIVED
 }

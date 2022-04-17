@@ -7,10 +7,12 @@ import my.pr.status.Status;
 import my.pr.repository.OrderRepository;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.keycloak.representations.AccessToken;
+
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import java.time.OffsetDateTime;
@@ -48,6 +50,7 @@ public class OrderService {
         newOrder.setFirstName(token.getGivenName());
         newOrder.setLastName(token.getFamilyName());
         newOrder.setOrderStatus(Status.WAITING);
+        newOrder.setCreate(OffsetDateTime.now());
         fullAddress(newOrder);
         repository.save(newOrder);
         emailMessage(newOrder, token);
@@ -82,20 +85,20 @@ public class OrderService {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if (order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.ACCEPTED);
+            order.setHandling(OffsetDateTime.now());
             return repository.save(order);
-        }
-        else {
+        } else {
             return order;
         }
     }
 
     public Order rejectOrder(UUID id) throws EntityNotFoundException, InterruptedException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
-        if(order.getOrderStatus().equals(Status.WAITING)) {
+        if (order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.REJECTED);
+            order.setHandling(OffsetDateTime.now());
             return repository.save(order);
-        }
-        else {
+        } else {
             return order;
         }
     }
@@ -121,10 +124,29 @@ public class OrderService {
         sender.sendMessage(email);
     }
 
-    private void fullAddress(Order order){
+    private void fullAddress(Order order) {
         StringBuilder fullAddress = new StringBuilder();
         fullAddress.append("City: ").append(order.getCity().getName()).append(", street: ").append(order.getStreet().getName()).append(", house:  ").append(order.getHouse()).append(", flat:  ").append(order.getFlat());
         order.setAddress(fullAddress.toString());
+    }
+
+    private void archivedAcceptOrder() {
+        List<Order> orders = repository.findAll();
+        for (int i = 0; i < orders.size(); i++) {
+            if ((orders.get(i).getOrderStatus().equals(Status.ACCEPTED)) || (orders.get(i).getOrderStatus().equals(Status.REJECTED))) {
+                Order newOrder = orders.get(i);
+                long archivedTime = 24*60*60;
+                if ((OffsetDateTime.now().toEpochSecond()-newOrder.getHandling().toEpochSecond())>archivedTime){
+                    newOrder.setOrderStatus(Status.ARCHIVED);
+                    repository.save(newOrder);
+                }
+            }
+        }
+    }
+
+    @Scheduled(fixedRateString = "3600000")
+    private void archivedStatus() throws InterruptedException {
+        archivedAcceptOrder();
     }
 
 }
