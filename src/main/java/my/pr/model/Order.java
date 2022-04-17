@@ -8,6 +8,7 @@ import my.pr.status.Status;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -38,19 +39,36 @@ public class Order {
     @Column(name = "type_order", nullable = false)
     private String typeOrder;
 
+    @ManyToOne
+    private City city;
+
+    @ManyToOne
+    private Street street;
+
+    @NotNull
+    @Column(name = "house", nullable = false)
+    private Integer house;
+
+    @Column(name = "flat", nullable = false)
+    private Integer flat;
+
+    @Column(name = "installation", nullable = false)
+    private Boolean installation;
+
     @NotNull
     @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "order_status")
     private Status orderStatus;
+
+
     @Builder
     @JsonCreator
-    public static Order customBuilder(@JsonProperty("typeOrder") String typeOrder,@JsonProperty("address") String address) {
+    public static Order customBuilder(@JsonProperty("typeOrder") String typeOrder) {
         Order order = new Order();
         order.setTypeOrder(typeOrder);
-        order.setAddress(address);
-        if (typeOrder.trim().length() == 0 || address.trim().length() == 0) {
+        if (typeOrder.trim().length() == 0 ) {
             throw new IllegalStateException("Cannot send 'text' and 'file'.");
         }
         return order;

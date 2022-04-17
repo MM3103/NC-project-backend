@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.keycloak.representations.AccessToken;
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +39,7 @@ public class OrderService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
     }
 
+
     public Order createOrder(Order newOrder) throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SimpleKeycloakAccount account = (SimpleKeycloakAccount) authentication.getDetails();
@@ -46,6 +48,7 @@ public class OrderService {
         newOrder.setFirstName(token.getGivenName());
         newOrder.setLastName(token.getFamilyName());
         newOrder.setOrderStatus(Status.WAITING);
+        fullAddress(newOrder);
         repository.save(newOrder);
         emailMessage(newOrder, token);
         return newOrder;
@@ -69,12 +72,13 @@ public class OrderService {
             return "Order cannot be updated";
         } else {
             setAdditionalData(newOrder, order);
+            fullAddress(order);
             repository.save(order);
             return "Order  successfully updated";
         }
     }
 
-    public Order acceptOrder(UUID id) throws EntityNotFoundException {
+    public Order acceptOrder(UUID id) throws EntityNotFoundException, InterruptedException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if (order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.ACCEPTED);
@@ -85,7 +89,7 @@ public class OrderService {
         }
     }
 
-    public Order rejectOrder(UUID id) throws EntityNotFoundException {
+    public Order rejectOrder(UUID id) throws EntityNotFoundException, InterruptedException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if(order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.REJECTED);
@@ -98,7 +102,11 @@ public class OrderService {
 
     private void setAdditionalData(Order newOrder, Order lastOrder) {
         lastOrder.setTypeOrder(newOrder.getTypeOrder());
-        lastOrder.setAddress(newOrder.getAddress());
+        lastOrder.setStreet(newOrder.getStreet());
+        lastOrder.setCity(newOrder.getCity());
+        lastOrder.setFlat(newOrder.getFlat());
+        lastOrder.setHouse(newOrder.getHouse());
+        lastOrder.setInstallation(newOrder.getInstallation());
     }
 
     private void emailMessage(Order savedOrder, AccessToken token) throws MessagingException {
@@ -112,4 +120,11 @@ public class OrderService {
                 + uuid));
         sender.sendMessage(email);
     }
+
+    private void fullAddress(Order order){
+        StringBuilder fullAddress = new StringBuilder();
+        fullAddress.append("City: ").append(order.getCity().getName()).append(", street: ").append(order.getStreet().getName()).append(", house:  ").append(order.getHouse()).append(", flat:  ").append(order.getFlat());
+        order.setAddress(fullAddress.toString());
+    }
+
 }

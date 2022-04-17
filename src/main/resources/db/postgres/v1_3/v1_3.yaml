@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: admin
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: city_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: cities_orders_fk
+                    referencedTableName: cities
+                    referencedColumnNames: id
+                    onDelete:  CASCADE
+                    onUpdate:  CASCADE
+              - column:
+                  name: street_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: streets_orders_fk
+                    referencedTableName: streets
+                    referencedColumnNames: id
+                    onDelete:  CASCADE
+                    onUpdate:  CASCADE
+              - column:
+                  name: house
+                  type: integer
+              - column:
+                  name: flat
+                  type: integer
+              - column:
+                  name: installation
+                  type: boolean
+

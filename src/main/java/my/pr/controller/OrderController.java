@@ -43,14 +43,14 @@ public class OrderController {
 
     @GetMapping("/order/acceptOrder/{id}")
     @Operation(summary = "Accepted order")
-    public String acceptOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
+    public String acceptOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException, InterruptedException {
         service.acceptOrder(id);
         return "Order accepted";
     }
 
     @GetMapping("/order/rejectOrder/{id}")
     @Operation(summary = "Rejected order")
-    public String rejectOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
+    public String rejectOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException, InterruptedException {
         service.rejectOrder(id);
         return "Order rejected";
     }
