@@ -60,6 +60,7 @@ public class OrderService {
         newOrder.setOrderStatus(Status.WAITING);
         newOrder.setCreation_time(OffsetDateTime.now());
         fullAddress(newOrder);
+        newOrder.setCreation_time(OffsetDateTime.now());
         repository.save(newOrder);
         emailMessage(newOrder);
         return newOrder;
