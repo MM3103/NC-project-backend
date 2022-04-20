@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class OrderController {
 
     @PostMapping("/order")
     @Operation(summary = "Add new order")
-    public Order createOrder(@RequestBody Order newOrder) throws MessagingException {
+    public Order createOrder(@RequestBody Order newOrder) {
         return service.createOrder(newOrder);
     }
 

@@ -22,3 +22,5 @@ keycloak:
   realm: ${KEYCLOAK_REALM:my_realm}
   resource: ${KEYCLOAK_RESOURCE:my_client}
   public-client: true
+email:
+  url: ${EMAIL_URL:http://localhost:8485}

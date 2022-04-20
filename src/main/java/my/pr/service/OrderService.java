@@ -1,19 +1,22 @@
 package my.pr.service;
 
-import my.pr.email.Email;
-import my.pr.email.Sender;
 import my.pr.model.Order;
 import my.pr.status.Status;
 import my.pr.repository.OrderRepository;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.keycloak.representations.AccessToken;
-import javax.mail.MessagingException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
 import javax.persistence.EntityNotFoundException;
 import java.time.OffsetDateTime;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +25,9 @@ public class OrderService {
 
     @Autowired
     private OrderRepository repository;
+
+    @Value("${email.url:http://localhost:8485}")
+    private String emailURL;
 
     public List<Order> getAll() {
         return repository.findAll();
@@ -43,7 +49,8 @@ public class OrderService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
     }
 
-    public Order createOrder(Order newOrder) throws MessagingException {
+    @Transactional(rollbackFor = ConnectException.class)
+    public Order createOrder(Order newOrder)  {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SimpleKeycloakAccount account = (SimpleKeycloakAccount) authentication.getDetails();
         AccessToken token = account.getKeycloakSecurityContext().getToken();
@@ -54,7 +61,7 @@ public class OrderService {
         newOrder.setCreation_time(OffsetDateTime.now());
         fullAddress(newOrder);
         repository.save(newOrder);
-        emailMessage(newOrder, token);
+        emailMessage(newOrder);
         return newOrder;
     }
 
@@ -120,16 +127,10 @@ public class OrderService {
         lastOrder.setSelfInstallation(newOrder.getSelfInstallation());
     }
 
-    private void emailMessage(Order savedOrder, AccessToken token) throws MessagingException {
-        Sender sender = new Sender("homework0005@gmail.com", "homework1234");
-        Email email = new Email("homework0005@gmail.com");
-        email.setTitle("New order created");
-        UUID uuid = savedOrder.getId();
-        email.setContent(String.format("User name: " + token.getFamilyName()
-                + ", order id " + uuid.toString() +
-                ".If you want to accept order,click here: http://localhost:3000/accept/"
-                + uuid));
-        sender.sendMessage(email);
+    private void emailMessage(Order newOrder)  {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response
+                = restTemplate.getForEntity(emailURL + "/" + newOrder.getId() + "/" + newOrder.getFirstName(), String.class);
     }
 
     private void fullAddress(Order order){
