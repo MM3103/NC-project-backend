@@ -8,6 +8,7 @@ import my.pr.status.Status;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -44,6 +45,13 @@ public class Order {
 
     @Column(name = "order_status")
     private Status orderStatus;
+
+    @Column(name = "creation_time")
+    private OffsetDateTime creation_time;
+
+    @Column(name = "modification_time")
+    private OffsetDateTime modification_time;
+
     @Builder
     @JsonCreator
     public static Order customBuilder(@JsonProperty("typeOrder") String typeOrder,@JsonProperty("address") String address) {

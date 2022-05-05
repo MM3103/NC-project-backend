@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.keycloak.representations.AccessToken;
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +25,10 @@ public class OrderService {
 
     public List<Order> getAll() {
         return repository.findAll();
+    }
+
+    public List<Order> getOrdersForArchived() {
+        return repository.findForArchived();
     }
 
     public List<Order> getByEmail() {
@@ -46,6 +51,7 @@ public class OrderService {
         newOrder.setFirstName(token.getGivenName());
         newOrder.setLastName(token.getFamilyName());
         newOrder.setOrderStatus(Status.WAITING);
+        newOrder.setCreation_time(OffsetDateTime.now());
         repository.save(newOrder);
         emailMessage(newOrder, token);
         return newOrder;
@@ -73,11 +79,17 @@ public class OrderService {
             return "Order  successfully updated";
         }
     }
+    public void archivedStatus(UUID id) throws EntityNotFoundException {
+        Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
+        order.setOrderStatus(Status.ARCHIVED);
+        repository.save(order);
+    }
 
     public Order acceptOrder(UUID id) throws EntityNotFoundException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if (order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.ACCEPTED);
+            order.setModification_time(OffsetDateTime.now());
             return repository.save(order);
         }
         else {
@@ -89,6 +101,7 @@ public class OrderService {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if(order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.REJECTED);
+            order.setModification_time(OffsetDateTime.now());
             return repository.save(order);
         }
         else {
@@ -112,4 +125,5 @@ public class OrderService {
                 + uuid));
         sender.sendMessage(email);
     }
+
 }

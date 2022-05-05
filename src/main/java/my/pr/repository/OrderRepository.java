@@ -13,4 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     @Query(value = "select * from orders where email = :email", nativeQuery = true)
     List<Order> findByEmail(@Param("email") String email);
+
+    @Query(value = "select * from orders where order_status in ('1','2') and ((now() - modification_time)> '24 hours' )", nativeQuery = true)
+    List<Order> findForArchived();
 }
