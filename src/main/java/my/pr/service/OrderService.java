@@ -52,6 +52,7 @@ public class OrderService {
         newOrder.setLastName(token.getFamilyName());
         newOrder.setOrderStatus(Status.WAITING);
         newOrder.setCreation_time(OffsetDateTime.now());
+        fullAddress(newOrder);
         repository.save(newOrder);
         emailMessage(newOrder, token);
         return newOrder;
@@ -75,6 +76,7 @@ public class OrderService {
             return "Order cannot be updated";
         } else {
             setAdditionalData(newOrder, order);
+            fullAddress(order);
             repository.save(order);
             return "Order  successfully updated";
         }
@@ -85,7 +87,7 @@ public class OrderService {
         repository.save(order);
     }
 
-    public Order acceptOrder(UUID id) throws EntityNotFoundException {
+    public Order acceptOrder(UUID id) throws EntityNotFoundException, InterruptedException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if (order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.ACCEPTED);
@@ -97,7 +99,7 @@ public class OrderService {
         }
     }
 
-    public Order rejectOrder(UUID id) throws EntityNotFoundException {
+    public Order rejectOrder(UUID id) throws EntityNotFoundException, InterruptedException {
         Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if(order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.REJECTED);
@@ -111,7 +113,11 @@ public class OrderService {
 
     private void setAdditionalData(Order newOrder, Order lastOrder) {
         lastOrder.setTypeOrder(newOrder.getTypeOrder());
-        lastOrder.setAddress(newOrder.getAddress());
+        lastOrder.setStreet(newOrder.getStreet());
+        lastOrder.setCity(newOrder.getCity());
+        lastOrder.setFlat(newOrder.getFlat());
+        lastOrder.setHouse(newOrder.getHouse());
+        lastOrder.setSelfInstallation(newOrder.getSelfInstallation());
     }
 
     private void emailMessage(Order savedOrder, AccessToken token) throws MessagingException {
@@ -124,6 +130,12 @@ public class OrderService {
                 ".If you want to accept order,click here: http://localhost:3000/accept/"
                 + uuid));
         sender.sendMessage(email);
+    }
+
+    private void fullAddress(Order order){
+        StringBuilder fullAddress = new StringBuilder();
+        fullAddress.append("City: ").append(order.getCity().getName()).append(", street: ").append(order.getStreet().getName()).append(", house:  ").append(order.getHouse()).append(", flat:  ").append(order.getFlat());
+        order.setAddress(fullAddress.toString());
     }
 
 }
