@@ -5,6 +5,7 @@ import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMo
 import my.pr.model.Order;
 import my.pr.repository.OrderRepository;
 import my.pr.status.Status;
+import my.pr.status.TypeOrder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,9 +42,9 @@ public class OrderServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        m1.setTypeOrder("o1");
-        m2.setTypeOrder("o2");
-        m3.setTypeOrder("o3");
+        m1.setTypeOrder(TypeOrder.Connection);
+        m2.setTypeOrder(TypeOrder.Deactivation);
+        m3.setTypeOrder(TypeOrder.Repair);
         m1.setAddress("o1");
         m2.setAddress("o2");
         m3.setAddress("o3");
@@ -61,7 +63,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void createOrderTest() throws MessagingException {
+    public void createOrderTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         assertEquals(1, orderService.getAll().size());
         assertEquals(m1.getTypeOrder(), orderService.getAll().get(0).getTypeOrder());
@@ -76,7 +78,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void getAllOrdersTest() throws MessagingException {
+    public void getAllOrdersTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         orderService.createOrder(m2);
         orderService.createOrder(m3);
@@ -96,7 +98,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void deleteOrderTest() throws MessagingException {
+    public void deleteOrderTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         orderService.createOrder(m2);
         orderService.createOrder(m3);
@@ -114,7 +116,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void deleteOrderFailedTest() throws MessagingException {
+    public void deleteOrderFailedTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         orderService.createOrder(m2);
         orderService.createOrder(m3);
@@ -133,9 +135,9 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void getOrderByEmailTest() throws MessagingException {
+    public void getOrderByEmailTest() throws MessagingException, IOException {
         Order orderAnotherUser = new Order();
-        orderAnotherUser.setTypeOrder("o4");
+        orderAnotherUser.setTypeOrder(TypeOrder.Connection);
         orderAnotherUser.setAddress("o4");
         orderAnotherUser.setEmail("o4");
         orderAnotherUser.setFirstName("o4");
@@ -157,7 +159,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void updateOrderTest() throws MessagingException {
+    public void updateOrderTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         UUID uuid = orderService.getAll().get(0).getId();
         orderService.update(uuid, m2);
@@ -174,11 +176,11 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void updateOrderFailedTest() throws MessagingException {
+    public void updateOrderFailedTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         UUID uuid = orderService.getAll().get(0).getId();
         orderService.update(uuid, m2);
-        assertEquals("o2", orderService.getAll().get(0).getTypeOrder());
+        assertEquals(TypeOrder.Deactivation, orderService.getAll().get(0).getTypeOrder());
         orderService.delete(uuid);
         orderService.update(uuid,m1);
     }

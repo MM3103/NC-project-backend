@@ -10,6 +10,7 @@ import my.pr.model.Order;
 import my.pr.repository.OrderRepository;
 import my.pr.service.OrderService;
 import my.pr.status.Status;
+import my.pr.status.TypeOrder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class OrderControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        m1.setTypeOrder("o1");
+        m1.setTypeOrder(TypeOrder.Connection);
         m1.setAddress("o1");
         m1.setEmail("o1");
         m1.setFirstName("o1");

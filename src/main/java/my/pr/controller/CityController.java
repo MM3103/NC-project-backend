@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import my.pr.model.City;
 import my.pr.service.CityService;
+import my.pr.status.CityAndStreetStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,16 +29,22 @@ public class CityController {
     @Autowired
     CityService service;
 
-    @GetMapping("/getAllCity")
+    @GetMapping("/getAllCities")
     @Operation(summary = "Get all cities")
     public List<City> getAllCities() {
         return service.getAllCities();
     }
 
-    @GetMapping("/getAllCitiesNames")
-    @Operation(summary = "Get all cities")
-    public List<String> getAllCitiesNames() {
-        return service.getCitiesNames();
+    @GetMapping("/getAllActiveCities")
+    @Operation(summary = "Get all active cities")
+    public List<City> getAllActiveCities() {
+        return service.getActiveCities();
+    }
+
+    @GetMapping("/getAllInactiveCities")
+    @Operation(summary = "Get all inactive cities")
+    public List<City> getAllInactiveCities() {
+        return service.getInactiveCities();
     }
 
     @GetMapping("/getCityById/{id}")
@@ -60,8 +67,17 @@ public class CityController {
 
     @PatchMapping("/update/{id}")
     @Operation(summary = "Update city  by id")
-    public void updateCity(@PathVariable(value = "id") Long id, @RequestBody City newCity) throws EntityNotFoundException {
-         service.updateCity(id, newCity);
+    public void updateCity(
+            @PathVariable(value = "id") Long id,
+            @RequestBody City newCity) throws EntityNotFoundException {
+        service.updateCity(id, newCity);
     }
+
+    @PatchMapping("/updateStatus/{id}")
+    @Operation(summary = "Update city status by id")
+    public void updateCityStatus(@PathVariable(value = "id") Long id,@RequestBody CityAndStreetStatus status) throws EntityNotFoundException {
+        service.setCityStatus(id,status);
+    }
+
 
 }
