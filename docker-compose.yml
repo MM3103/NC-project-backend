@@ -8,7 +8,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=order_service
+      - POSTGRES_DB=os30
     networks:
       - my-net
   keycloak-dev:
@@ -26,21 +26,29 @@ services:
       - ./keycloak:/tmp/keycloak
     networks:
       - my-net
+  email-service:
+    image: mm98/email-service-app:1.0
+    ports:
+      - 8485:8485
+    networks:
+      - my-net
   my-service:
     image: mm98/order-service-app:1.0
     ports:
       - 8484:8484
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - DB_URL=jdbc:postgresql://db_serv:5432/order_service
+      - DB_URL=jdbc:postgresql://db_serv:5432/os30
       - KEYCLOAK_URL=http://keycloak-dev:8080/auth
       - KEYCLOAK_REALM=my_realm
       - KEYCLOAK_RESOURCE=my_client
       - DB_PASSWORD=1234
       - DB_USERNAME=postgres
+      - EMAIL_URL=http://email-service:8485
     depends_on:
       - keycloak-dev
       - db_serv
+      - email-service
     networks:
       - my-net
 volumes:

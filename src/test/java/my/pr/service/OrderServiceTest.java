@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -61,7 +62,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void createOrderTest() throws MessagingException {
+    public void createOrderTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         assertEquals(1, orderService.getAll().size());
         assertEquals(m1.getTypeOrder(), orderService.getAll().get(0).getTypeOrder());
@@ -76,7 +77,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void getAllOrdersTest() throws MessagingException {
+    public void getAllOrdersTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         orderService.createOrder(m2);
         orderService.createOrder(m3);
@@ -96,7 +97,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void deleteOrderTest() throws MessagingException {
+    public void deleteOrderTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         orderService.createOrder(m2);
         orderService.createOrder(m3);
@@ -114,7 +115,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void deleteOrderFailedTest() throws MessagingException {
+    public void deleteOrderFailedTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         orderService.createOrder(m2);
         orderService.createOrder(m3);
@@ -133,7 +134,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void getOrderByEmailTest() throws MessagingException {
+    public void getOrderByEmailTest() throws MessagingException, IOException {
         Order orderAnotherUser = new Order();
         orderAnotherUser.setTypeOrder("o4");
         orderAnotherUser.setAddress("o4");
@@ -157,7 +158,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void updateOrderTest() throws MessagingException {
+    public void updateOrderTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         UUID uuid = orderService.getAll().get(0).getId();
         orderService.update(uuid, m2);
@@ -174,7 +175,7 @@ public class OrderServiceTest {
                     familyName = "admin",
                     givenName = "admin"
             ))
-    public void updateOrderFailedTest() throws MessagingException {
+    public void updateOrderFailedTest() throws MessagingException, IOException {
         orderService.createOrder(m1);
         UUID uuid = orderService.getAll().get(0).getId();
         orderService.update(uuid, m2);
