@@ -81,7 +81,8 @@ This section describes the minimum and recommended available resources required 
    * KEYCLOAK_REALM: my_realm
    
    * KEYCLOAK_RESOURCE: my_client
-    
+   
+   * EMAIL_URL=http://localhost:8485
     
     
     

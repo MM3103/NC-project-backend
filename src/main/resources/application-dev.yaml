@@ -4,9 +4,11 @@ spring:
     driver-class-name: org.h2.Driver
   liquibase:
     enabled: true
-    change-log: ${LIQUIBASE_CHANGE-LOG:classpath:h2/changelogs.yaml}
+    change-log: ${LIQUIBASE_CHANGE-LOG:classpath:db/h2/changelogs.yaml}
     contexts: dev
   application:
     name: ${APPLICATION_NAME:orderService}
   main:
     allow-circular-references: true
+email:
+  url: ${EMAIL_URL:http://localhost:8485}
