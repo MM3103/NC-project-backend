@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityNotFoundException;
+import java.net.ConnectException;
 import java.time.OffsetDateTime;
 import java.net.ConnectException;
 import java.util.List;
@@ -42,15 +43,16 @@ public class OrderService {
         SimpleKeycloakAccount account = (SimpleKeycloakAccount) authentication.getDetails();
         AccessToken token = account.getKeycloakSecurityContext().getToken();
         String emailUser = token.getEmail();
-        return repository.findByEmail(emailUser);
+        return repository.findOrdersByEmail(emailUser);
     }
 
     public Order get(UUID id) throws EntityNotFoundException {
-        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
+        return repository
+                .findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
     }
 
     @Transactional(rollbackFor = ConnectException.class)
-    public Order createOrder(Order newOrder)  {
+    public Order createOrder(Order newOrder) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SimpleKeycloakAccount account = (SimpleKeycloakAccount) authentication.getDetails();
         AccessToken token = account.getKeycloakSecurityContext().getToken();
@@ -67,7 +69,8 @@ public class OrderService {
     }
 
     public String delete(UUID id) throws EntityNotFoundException {
-        Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
+        Order order = repository
+                .findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         Status orderStatus = order.getOrderStatus();
         if (orderStatus.equals(Status.WAITING)) {
             repository.delete(order);
@@ -78,7 +81,8 @@ public class OrderService {
     }
 
     public String update(UUID id, Order newOrder) throws EntityNotFoundException {
-        Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
+        Order order = repository
+                .findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         Status orderStatus = order.getOrderStatus();
         if (!(orderStatus.equals(Status.WAITING))) {
             return "Order cannot be updated";
@@ -89,32 +93,35 @@ public class OrderService {
             return "Order  successfully updated";
         }
     }
+
     public void archivedStatus(UUID id) throws EntityNotFoundException {
-        Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
+        Order order = repository
+                .findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         order.setOrderStatus(Status.ARCHIVED);
         repository.save(order);
     }
 
-    public Order acceptOrder(UUID id) throws EntityNotFoundException, InterruptedException {
-        Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
+
+    public Order acceptOrder(UUID id) throws EntityNotFoundException {
+        Order order = repository
+                .findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
         if (order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.ACCEPTED);
             order.setModification_time(OffsetDateTime.now());
             return repository.save(order);
-        }
-        else {
+        } else {
             return order;
         }
     }
 
-    public Order rejectOrder(UUID id) throws EntityNotFoundException, InterruptedException {
-        Order order = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
-        if(order.getOrderStatus().equals(Status.WAITING)) {
+    public Order rejectOrder(UUID id) throws EntityNotFoundException {
+        Order order = repository
+                .findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found for id: " + id));
+        if (order.getOrderStatus().equals(Status.WAITING)) {
             order.setOrderStatus(Status.REJECTED);
             order.setModification_time(OffsetDateTime.now());
             return repository.save(order);
-        }
-        else {
+        } else {
             return order;
         }
     }
@@ -128,16 +135,24 @@ public class OrderService {
         lastOrder.setSelfInstallation(newOrder.getSelfInstallation());
     }
 
-    private void emailMessage(Order newOrder)  {
+    private void emailMessage(Order newOrder) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response
                 = restTemplate.getForEntity(emailURL + "/" + newOrder.getId() + "/" + newOrder.getFirstName(), String.class);
+
     }
 
-    private void fullAddress(Order order){
+    private void fullAddress(Order order) {
         StringBuilder fullAddress = new StringBuilder();
-        fullAddress.append("City: ").append(order.getCity().getName()).append(", street: ").append(order.getStreet().getName()).append(", house:  ").append(order.getHouse()).append(", flat:  ").append(order.getFlat());
+        fullAddress
+                .append("City: ")
+                .append(order.getCity().getName())
+                .append(", street: ")
+                .append(order.getStreet().getName())
+                .append(", house:  ")
+                .append(order.getHouse())
+                .append(", flat:  ")
+                .append(order.getFlat());
         order.setAddress(fullAddress.toString());
     }
-
 }

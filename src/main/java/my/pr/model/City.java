@@ -1,6 +1,7 @@
 package my.pr.model;
 
 import lombok.Data;
+import my.pr.status.CityAndStreetStatus;
 
 import javax.persistence.*;
 
@@ -24,4 +25,7 @@ public class City {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Column(name = "city_status")
+    @Enumerated(EnumType.STRING)
+    private CityAndStreetStatus cityStatus = CityAndStreetStatus.ACTIVE;
 }

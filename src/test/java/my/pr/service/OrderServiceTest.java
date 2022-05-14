@@ -5,6 +5,7 @@ import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMo
 import my.pr.model.Order;
 import my.pr.repository.OrderRepository;
 import my.pr.status.Status;
+import my.pr.status.TypeOrder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +42,9 @@ public class OrderServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        m1.setTypeOrder("o1");
-        m2.setTypeOrder("o2");
-        m3.setTypeOrder("o3");
+        m1.setTypeOrder(TypeOrder.Connection);
+        m2.setTypeOrder(TypeOrder.Deactivation);
+        m3.setTypeOrder(TypeOrder.Repair);
         m1.setAddress("o1");
         m2.setAddress("o2");
         m3.setAddress("o3");
@@ -136,7 +137,7 @@ public class OrderServiceTest {
             ))
     public void getOrderByEmailTest() throws MessagingException, IOException {
         Order orderAnotherUser = new Order();
-        orderAnotherUser.setTypeOrder("o4");
+        orderAnotherUser.setTypeOrder(TypeOrder.Connection);
         orderAnotherUser.setAddress("o4");
         orderAnotherUser.setEmail("o4");
         orderAnotherUser.setFirstName("o4");
@@ -179,7 +180,7 @@ public class OrderServiceTest {
         orderService.createOrder(m1);
         UUID uuid = orderService.getAll().get(0).getId();
         orderService.update(uuid, m2);
-        assertEquals("o2", orderService.getAll().get(0).getTypeOrder());
+        assertEquals(TypeOrder.Deactivation, orderService.getAll().get(0).getTypeOrder());
         orderService.delete(uuid);
         orderService.update(uuid,m1);
     }

@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: admin
+      changes:
+        - addColumn:
+            tableName: cities
+            columns:
+              - column:
+                  name: city_status
+                  type: varchar(50)
+        - addColumn:
+            tableName: streets
+            columns:
+              - column:
+                  name: street_status
+                  type: varchar(50)

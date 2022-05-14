@@ -18,8 +18,7 @@ public class OrderArchiving {
     @Scheduled(fixedRateString = "3600000")
     public void archivedStatus() {
         List<Order> orders = service.getOrdersForArchived();
-        for (int i = 0; i < orders.size(); i++) {
-            Order newOrder = orders.get(i);
+        for (Order newOrder : orders) {
             service.archivedStatus(newOrder.getId());
         }
     }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -44,14 +43,14 @@ public class OrderController {
 
     @GetMapping("/order/acceptOrder/{id}")
     @Operation(summary = "Accepted order")
-    public String acceptOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException, InterruptedException {
+    public String acceptOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
         service.acceptOrder(id);
         return "Order accepted";
     }
 
     @GetMapping("/order/rejectOrder/{id}")
     @Operation(summary = "Rejected order")
-    public String rejectOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException, InterruptedException {
+    public String rejectOrder(@PathVariable(value = "id") UUID id) throws EntityNotFoundException {
         service.rejectOrder(id);
         return "Order rejected";
     }
@@ -76,7 +75,9 @@ public class OrderController {
 
     @PatchMapping("/order/{id}")
     @Operation(summary = "Update order  by id")
-    public String updateOrder(@PathVariable(value = "id") UUID id, @RequestBody Order newOrder) throws EntityNotFoundException {
+    public String updateOrder(
+            @PathVariable(value = "id") UUID id,
+            @RequestBody Order newOrder) throws EntityNotFoundException {
         return service.update(id, newOrder);
     }
 
