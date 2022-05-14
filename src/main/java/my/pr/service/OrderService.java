@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.persistence.EntityNotFoundException;
 import java.net.ConnectException;
 import java.time.OffsetDateTime;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,6 +62,7 @@ public class OrderService {
         newOrder.setOrderStatus(Status.WAITING);
         newOrder.setCreation_time(OffsetDateTime.now());
         fullAddress(newOrder);
+        newOrder.setCreation_time(OffsetDateTime.now());
         repository.save(newOrder);
         emailMessage(newOrder);
         return newOrder;
